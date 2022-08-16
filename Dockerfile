@@ -1,7 +1,7 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 # Build arguments
-ARG MYTH_VERSION=31
+ARG MYTH_VERSION=32
 
 # Set correct environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -40,7 +40,7 @@ RUN apt-get update -qq && \
 # set the locale
 	locale-gen ${LANG} && \
 # prepare apt 
-	apt-get install -y software-properties-common --no-install-recommends && \
+	apt-get install -y software-properties-common gpg-agent --no-install-recommends && \
 	apt-add-repository ppa:mythbuntu/$MYTH_VERSION -y && \
 	apt-get update -qq && \
 # packages to install
