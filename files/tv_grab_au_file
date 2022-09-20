@@ -51,7 +51,11 @@ then
 
     #latest EPG is missing content for 9GEM HD (aka channel 95). Since it is a duplicate of channel 92 (the SDTV version), let's just swap channel 92 for 95 and the quality attribute.
     #need to massage the newlines in the file so sed can match across child elements in the programme tag
-    cat $TARGET_XML | tr -d '\n' | sed 's/<\/programme>\r/<\/programme>\n/g' | sed 's/ channel="92\(.*\)SDTV/ channel="95\1HDTV/g' | tr '\r' '\n' > $TARGET_XML
+    cat $TARGET_XML | tr -d '\n' | sed 's/<\/programme>\r/<\/programme>\n/g' > $TARGET_XML.tmp 
+    #now do the substitution
+    sed -i 's/ channel="92\(.*\)SDTV/ channel="95\1HDTV/g' $TARGET_XML.tmp
+    #put the newlines back in the file (not really needed but easier to debug)
+    tr '\r' '\n' < $TARGET_XML.tmp > $TARGET_XML
 fi
 
 #populate mythtv if download is successful
