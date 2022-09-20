@@ -8,6 +8,11 @@
 #    -f flag to tell mythfilldatabase to update new channels and icons (OPTIONAL - if not specified, runs mythfilldatabase with the --update flag)
 # usage
 #    tv_grab_au_file -s 1 -r Sydney -f
+#
+#  VERSION HISTORY
+#  01/07/2021 - Initial version
+#  20/09/2022 - Change channel 92 to 95 as yourtv is missing EPG for that channel
+#
 ####
 
 TARGET_XML=/tmp/epg.xml
@@ -43,6 +48,10 @@ then
     sed -i 's/ Sydney<\/display-name>/<\/display-name>/g' $TARGET_XML
     #add trailing Sydney for 7 channels
     sed -i 's/>7\(.*\)<\/display-name>/>7\1 Sydney<\/display-name>/g' $TARGET_XML
+
+    #latest EPG is missing content for 9GEM HD (aka channel 95). Since it is a duplicate of channel 92 (the SDTV version), let's just swap channel 92 for 95 and the quality attribute.
+    #need to massage the newlines in the file so sed can match across child elements in the programme tag
+    cat $TARGET_XML | tr -d '\n' | sed 's/<\/programme>\r/<\/programme>\n/g' | sed 's/ channel="92\(.*\)SDTV/ channel="95\1HDTV/g' | tr '\r' '\n' > $TARGET_XML
 fi
 
 #populate mythtv if download is successful
